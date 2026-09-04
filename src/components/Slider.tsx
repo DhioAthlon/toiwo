@@ -1,24 +1,25 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { PlaceholderImage } from "@/components/PlaceholderImage";
+import { Media } from "@/components/Media";
 import { ArrowIcon } from "@/components/icons";
 
+export type SlideImage = { imageId: string | null; tone: number };
+
 export function Slider({
-  count,
-  toneStart = 0,
+  images,
   aspect = "aspect-[4/5]",
   labelPrefix = "Foto",
   autoPlayMs,
 }: {
-  count: number;
-  toneStart?: number;
+  images: SlideImage[];
   aspect?: string;
   labelPrefix?: string;
   autoPlayMs?: number;
 }) {
   const [index, setIndex] = useState(0);
-  const slides = Array.from({ length: count }, (_, i) => i);
+  const slides = images.length > 0 ? images : [{ imageId: null, tone: 0 }];
+  const count = slides.length;
 
   const go = useCallback(
     (dir: 1 | -1) => {
@@ -28,10 +29,10 @@ export function Slider({
   );
 
   useEffect(() => {
-    if (!autoPlayMs) return;
+    if (!autoPlayMs || count <= 1) return;
     const id = setInterval(() => go(1), autoPlayMs);
     return () => clearInterval(id);
-  }, [autoPlayMs, go]);
+  }, [autoPlayMs, go, count]);
 
   return (
     <div className="relative w-full">
@@ -40,13 +41,17 @@ export function Slider({
           className="flex h-full w-full transition-transform duration-500 ease-out"
           style={{ transform: `translateX(-${index * 100}%)` }}
         >
-          {slides.map((i) => (
+          {slides.map((slide, i) => (
             <div key={i} className="h-full w-full flex-shrink-0">
-              <PlaceholderImage
-                tone={toneStart + i}
-                label={`${labelPrefix} ${i + 1} / ${count}`}
+              <Media
+                imageId={slide.imageId}
+                tone={slide.tone}
+                label={
+                  images.length > 0
+                    ? `${labelPrefix} ${i + 1} / ${count}`
+                    : "Foto belum diunggah"
+                }
                 className="h-full w-full"
-                iconClassName="h-10 w-10"
               />
             </div>
           ))}
@@ -74,7 +79,7 @@ export function Slider({
 
       {count > 1 && (
         <div className="mt-4 flex items-center justify-center gap-2">
-          {slides.map((i) => (
+          {slides.map((_, i) => (
             <button
               key={i}
               aria-label={`Ke slide ${i + 1}`}

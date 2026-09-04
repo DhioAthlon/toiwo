@@ -4,7 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
-import { siteConfig } from "@/lib/site-config";
+import { getSiteSettings } from "@/lib/content";
 
 const display = Playfair_Display({
   variable: "--font-display",
@@ -18,13 +18,16 @@ const sans = Inter({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: `${siteConfig.name} — Photography & Videography`,
-    template: `%s — ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: {
+      default: `${settings.studioName} — Photography & Videography`,
+      template: `%s — ${settings.studioName}`,
+    },
+    description: settings.description,
+  };
+}
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

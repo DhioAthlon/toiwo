@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { ProjectCard } from "@/components/ProjectCard";
-import { categories, projects } from "@/lib/data";
+import { categories, type Project } from "@/lib/content";
 
-export function ProjectsGrid() {
+export function ProjectsGrid({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<(typeof categories)[number]>("All");
 
   const filtered =
@@ -27,11 +27,15 @@ export function ProjectsGrid() {
           </button>
         ))}
       </div>
-      <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((project) => (
-          <ProjectCard key={project.slug} project={project} />
-        ))}
-      </div>
+      {filtered.length === 0 ? (
+        <p className="text-muted">Belum ada project di kategori ini.</p>
+      ) : (
+        <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((project) => (
+            <ProjectCard key={project.slug} project={project} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

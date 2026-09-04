@@ -1,21 +1,39 @@
 import Link from "next/link";
-import { PlaceholderImage } from "@/components/PlaceholderImage";
+import { Media } from "@/components/Media";
 import { Slider } from "@/components/Slider";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ProjectCard } from "@/components/ProjectCard";
 import { ArrowIcon, PlayIcon } from "@/components/icons";
-import { projects, team } from "@/lib/data";
-import { siteConfig, whatsappHref } from "@/lib/site-config";
+import { getProjects, getTeam, getSiteSettings, getFilms } from "@/lib/content";
+import { whatsappHref } from "@/lib/site-config";
+import { YouTubeEmbed } from "@/components/YouTubeEmbed";
 
-export default function Home() {
+export const revalidate = 60;
+
+export default async function Home() {
+  const [projects, team, films, settings] = await Promise.all([
+    getProjects(),
+    getTeam(),
+    getFilms(),
+    getSiteSettings(),
+  ]);
   const featured = projects.slice(0, 3);
+  const heroFilm = films[0];
+  const wa = whatsappHref(settings.whatsappNumber, settings.whatsappMessage);
+
+  // Hero slider draws from the same photos as "Karya Pilihan" below, so a
+  // freshly-added project's cover image shows up in the hero automatically.
+  const heroSlides = (featured.length > 0 ? featured : projects).map((p) => ({
+    imageId: p.coverImageId,
+    tone: p.tone,
+  }));
 
   return (
     <>
       {/* Hero */}
       <section className="relative h-[92vh] min-h-[560px] w-full overflow-hidden">
         <div className="absolute inset-0">
-          <Slider count={5} aspect="aspect-auto h-[92vh] min-h-[560px]" labelPrefix="Hero" autoPlayMs={6000} />
+          <Slider images={heroSlides} aspect="aspect-auto h-[92vh] min-h-[560px]" labelPrefix="Hero" autoPlayMs={6000} />
         </div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/40 via-ink/5 to-ink/10" />
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center px-6">
@@ -23,10 +41,10 @@ export default function Home() {
             Photography &amp; Videography Studio
           </p>
           <h1 className="font-display italic text-4xl sm:text-6xl md:text-7xl text-paper leading-tight max-w-3xl">
-            {siteConfig.tagline}
+            {settings.tagline}
           </h1>
           <a
-            href={whatsappHref()}
+            href={wa}
             target="_blank"
             rel="noreferrer"
             className="pointer-events-auto mt-8 inline-flex items-center gap-2 border border-paper/70 text-paper px-7 py-3 text-sm uppercase tracking-[0.15em] hover:bg-paper hover:text-ink transition-colors"
@@ -38,17 +56,15 @@ export default function Home() {
 
       {/* Intro */}
       <section className="mx-auto max-w-6xl px-6 py-24 md:py-32 grid gap-12 md:grid-cols-2 items-center">
-        <PlaceholderImage tone={2} className="aspect-[4/5] order-2 md:order-1" />
+        <div className="order-2 md:order-1 aspect-[4/5] overflow-hidden">
+          <Media imageId={team[0]?.photoId} tone={2} alt={settings.studioName} />
+        </div>
         <div className="order-1 md:order-2">
           <p className="text-xs uppercase tracking-[0.25em] text-muted mb-4">Tentang Kami</p>
           <h2 className="font-display text-3xl sm:text-4xl leading-tight mb-6">
             Setiap momen punya jiwa. Kami di sini untuk merekamnya.
           </h2>
-          <p className="text-muted leading-relaxed mb-8 max-w-md">
-            {siteConfig.name} telah mendampingi lebih dari 480 pasangan mengabadikan
-            perjalanan cinta mereka selama satu dekade terakhir — dari prosesi adat
-            yang sakral hingga sesi prewedding di ujung dunia.
-          </p>
+          <p className="text-muted leading-relaxed mb-8 max-w-md">{settings.description}</p>
           <Link
             href="/photographer"
             className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.15em] hover:opacity-60 transition-opacity"
@@ -95,29 +111,34 @@ export default function Home() {
             Tonton Karya Video <ArrowIcon className="h-4 w-4" />
           </Link>
         </div>
-        <Link href="/videography" className="group relative block overflow-hidden">
-          <PlaceholderImage
-            tone={3}
-            className="aspect-video transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-paper/85 backdrop-blur-sm transition-transform group-hover:scale-110">
-              <PlayIcon className="h-6 w-6 translate-x-0.5" />
-            </span>
-          </div>
-        </Link>
+        {heroFilm?.youtubeId ? (
+          <YouTubeEmbed youtubeId={heroFilm.youtubeId} className="aspect-video" />
+        ) : (
+          <Link href="/videography" className="group relative block overflow-hidden aspect-video">
+            <Media tone={3} label="Video belum ditautkan" className="transition-transform duration-500 group-hover:scale-105" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-paper/85 backdrop-blur-sm transition-transform group-hover:scale-110">
+                <PlayIcon className="h-6 w-6 translate-x-0.5" />
+              </span>
+            </div>
+          </Link>
+        )}
       </section>
 
       {/* Team teaser */}
       <section className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-        <SectionHeading kicker="Di Balik Layar" title="Tim Toiwo Studio" align="center" className="mb-14" />
+        <SectionHeading kicker="Di Balik Layar" title={`Tim ${settings.studioName}`} align="center" className="mb-14" />
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {team.map((member) => (
             <Link key={member.slug} href="/photographer" className="group block text-center">
-              <PlaceholderImage
-                tone={member.tone}
-                className="aspect-[4/5] transition-transform duration-500 group-hover:scale-105"
-              />
+              <div className="aspect-[4/5] overflow-hidden">
+                <Media
+                  imageId={member.photoId}
+                  tone={member.tone}
+                  alt={member.name}
+                  className="transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
               <h3 className="font-display text-lg mt-4">{member.name}</h3>
               <p className="text-xs uppercase tracking-[0.12em] text-muted mt-1">{member.role}</p>
             </Link>
@@ -133,7 +154,7 @@ export default function Home() {
             Ceritamu layak diabadikan dengan cara yang paling jujur.
           </h2>
           <a
-            href={whatsappHref()}
+            href={wa}
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 bg-paper text-ink px-8 py-3.5 text-sm uppercase tracking-[0.15em] hover:opacity-90 transition-opacity"

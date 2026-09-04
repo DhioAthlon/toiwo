@@ -1,15 +1,17 @@
 import Link from "next/link";
-import { PlaceholderImage } from "@/components/PlaceholderImage";
+import { Media } from "@/components/Media";
 import { PlayIcon } from "@/components/icons";
-import type { Project, FilmProject } from "@/lib/data";
+import type { Project, FilmProject } from "@/lib/content";
 
 export function ProjectCard({ project }: { project: Project }) {
   return (
     <Link href={`/projects/${project.slug}`} className="group block">
-      <div className="overflow-hidden">
-        <PlaceholderImage
+      <div className="overflow-hidden aspect-[4/5]">
+        <Media
+          imageId={project.coverImageId}
           tone={project.tone}
-          className="aspect-[4/5] transition-transform duration-500 group-hover:scale-105"
+          alt={project.title}
+          className="transition-transform duration-500 group-hover:scale-105"
         />
       </div>
       <div className="mt-4 flex items-start justify-between gap-4">
@@ -28,21 +30,29 @@ export function ProjectCard({ project }: { project: Project }) {
 }
 
 export function FilmCard({ film }: { film: FilmProject }) {
+  const thumbnail = film.youtubeId
+    ? `https://i.ytimg.com/vi/${film.youtubeId}/hqdefault.jpg`
+    : null;
+
   return (
     <Link href={`/videography/${film.slug}`} className="group block">
-      <div className="relative overflow-hidden">
-        <PlaceholderImage
-          tone={film.tone}
-          className="aspect-video transition-transform duration-500 group-hover:scale-105"
-        />
+      <div className="relative overflow-hidden aspect-video">
+        {thumbnail ? (
+          // eslint-disable-next-line @next/next/no-img-element -- YouTube-hosted thumbnail, not a Cloudinary/Next asset
+          <img
+            src={thumbnail}
+            alt={film.title}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <Media tone={film.tone} label="Video belum ditautkan" className="transition-transform duration-500 group-hover:scale-105" />
+        )}
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="flex h-14 w-14 items-center justify-center rounded-full bg-paper/85 backdrop-blur-sm transition-transform group-hover:scale-110">
             <PlayIcon className="h-5 w-5 translate-x-0.5" />
           </span>
         </div>
-        <span className="absolute bottom-3 right-3 rounded-full bg-ink/70 px-3 py-1 text-[11px] text-paper">
-          {film.duration}
-        </span>
       </div>
       <div className="mt-4 flex items-start justify-between gap-4">
         <div>

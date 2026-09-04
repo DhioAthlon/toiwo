@@ -24,7 +24,7 @@ export function PlaceholderImage({
 
   return (
     <div
-      className={`relative flex items-center justify-center overflow-hidden bg-gradient-to-br ${gradient} ${className}`}
+      className={`relative flex h-full w-full items-center justify-center overflow-hidden bg-gradient-to-br ${gradient} ${className}`}
     >
       <svg
         viewBox="0 0 24 24"

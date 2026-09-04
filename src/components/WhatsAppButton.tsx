@@ -1,10 +1,13 @@
+import { getSiteSettings } from "@/lib/content";
 import { whatsappHref } from "@/lib/site-config";
 import { WhatsappIcon } from "@/components/icons";
 
-export function WhatsAppButton() {
+export async function WhatsAppButton() {
+  const settings = await getSiteSettings();
+
   return (
     <a
-      href={whatsappHref()}
+      href={whatsappHref(settings.whatsappNumber, settings.whatsappMessage)}
       target="_blank"
       rel="noreferrer"
       aria-label="Chat via WhatsApp"

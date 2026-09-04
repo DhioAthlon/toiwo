@@ -1,15 +1,23 @@
 import type { Metadata } from "next";
-import { PlaceholderImage } from "@/components/PlaceholderImage";
+import { Media } from "@/components/Media";
 import { SectionHeading } from "@/components/SectionHeading";
-import { team, stats } from "@/lib/data";
-import { siteConfig, whatsappHref } from "@/lib/site-config";
+import { getTeam, getStats, getSiteSettings } from "@/lib/content";
+import { whatsappHref } from "@/lib/site-config";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Photographer",
-  description: "Kenali tim fotografer dan videografer di balik Toiwo Studio.",
+  description: "Kenali tim fotografer dan videografer di balik studio kami.",
 };
 
-export default function PhotographerPage() {
+export default async function PhotographerPage() {
+  const [team, stats, settings] = await Promise.all([
+    getTeam(),
+    getStats(),
+    getSiteSettings(),
+  ]);
+
   return (
     <div className="pt-32 pb-24 md:pt-40 md:pb-32">
       {/* Studio story */}
@@ -20,7 +28,7 @@ export default function PhotographerPage() {
             Lebih dari sekadar kamera — kami hadir untuk merasakan momenmu.
           </h1>
           <p className="text-muted leading-relaxed mb-4 max-w-md">
-            {siteConfig.name} lahir pada 2014 dari kegemaran sederhana memotret
+            {settings.studioName} lahir dari kegemaran sederhana memotret
             reaksi jujur manusia. Sejak itu, kami tumbuh menjadi tim kecil yang
             percaya bahwa dokumentasi terbaik lahir dari kepercayaan, bukan pose.
           </p>
@@ -30,7 +38,9 @@ export default function PhotographerPage() {
             bukan sekadar galeri foto yang seragam.
           </p>
         </div>
-        <PlaceholderImage tone={1} className="aspect-[4/5]" />
+        <div className="aspect-[4/5] overflow-hidden">
+          <Media imageId={team[0]?.photoId} tone={1} alt={settings.studioName} />
+        </div>
       </div>
 
       {/* Stats */}
@@ -51,7 +61,9 @@ export default function PhotographerPage() {
         <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
           {team.map((member) => (
             <div key={member.slug}>
-              <PlaceholderImage tone={member.tone} className="aspect-[4/5]" />
+              <div className="aspect-[4/5] overflow-hidden">
+                <Media imageId={member.photoId} tone={member.tone} alt={member.name} />
+              </div>
               <h3 className="font-display text-xl mt-4">{member.name}</h3>
               <p className="text-xs uppercase tracking-[0.12em] text-muted mt-1 mb-3">{member.role}</p>
               <p className="text-sm text-muted leading-relaxed">{member.bio}</p>
@@ -66,7 +78,10 @@ export default function PhotographerPage() {
           Ingin berkenalan langsung dengan tim kami?
         </h2>
         <a
-          href={whatsappHref("Halo, saya ingin konsultasi dan kenalan dengan tim Toiwo Studio.")}
+          href={whatsappHref(
+            settings.whatsappNumber,
+            `Halo, saya ingin konsultasi dan kenalan dengan tim ${settings.studioName}.`
+          )}
           target="_blank"
           rel="noreferrer"
           className="inline-flex items-center gap-2 bg-ink text-paper px-8 py-3.5 text-sm uppercase tracking-[0.15em] hover:opacity-90 transition-opacity"
