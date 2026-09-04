@@ -28,7 +28,18 @@ export async function Footer() {
           <a href={`mailto:${settings.email}`} className="hover:opacity-60 transition-opacity w-fit">
             {settings.email}
           </a>
-          <span className="text-muted">{settings.location}</span>
+          {settings.mapsLink ? (
+            <a
+              href={settings.mapsLink}
+              target="_blank"
+              rel="noreferrer"
+              className="text-muted hover:opacity-60 transition-opacity w-fit"
+            >
+              {settings.location}
+            </a>
+          ) : (
+            <span className="text-muted">{settings.location}</span>
+          )}
           <div className="flex items-center gap-4 mt-2">
             <a href={settings.instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram">
               <InstagramIcon className="h-5 w-5 hover:opacity-60 transition-opacity" />
@@ -40,12 +51,23 @@ export async function Footer() {
               <FacebookIcon className="h-5 w-5 hover:opacity-60 transition-opacity" />
             </a>
           </div>
+          {settings.mapsEmbedUrl && (
+            <iframe
+              src={settings.mapsEmbedUrl}
+              width="100%"
+              height="160"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+              title={`Lokasi ${settings.studioName}`}
+              className="mt-2 grayscale-[40%] hover:grayscale-0 transition-[filter]"
+            />
+          )}
         </div>
       </div>
       <div className="border-t border-line">
-        <div className="mx-auto max-w-6xl px-6 py-6 text-xs text-muted flex flex-col sm:flex-row gap-2 justify-between">
+        <div className="mx-auto max-w-6xl px-6 py-6 text-xs text-muted">
           <span>© {new Date().getFullYear()} {settings.studioName}. All rights reserved.</span>
-          <span>Dibuat dengan Next.js</span>
         </div>
       </div>
     </footer>

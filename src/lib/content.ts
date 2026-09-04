@@ -143,6 +143,8 @@ type SiteSettingsRow = {
   instagram_url: string | null;
   youtube_url: string | null;
   facebook_url: string | null;
+  maps_link: string | null;
+  maps_embed_url: string | null;
 };
 
 function mapProject(row: ProjectRow): Project {
@@ -199,6 +201,8 @@ function mapSettings(row: SiteSettingsRow | null): SiteSettings {
     instagramUrl: row.instagram_url ?? defaultSiteSettings.instagramUrl,
     youtubeUrl: row.youtube_url ?? defaultSiteSettings.youtubeUrl,
     facebookUrl: row.facebook_url ?? defaultSiteSettings.facebookUrl,
+    mapsLink: row.maps_link ?? defaultSiteSettings.mapsLink,
+    mapsEmbedUrl: row.maps_embed_url ?? defaultSiteSettings.mapsEmbedUrl,
   };
 }
 

@@ -19,6 +19,8 @@ create table if not exists site_settings (
   instagram_url text,
   youtube_url text,
   facebook_url text,
+  maps_link text,        -- shareable Google Maps link (maps.app.goo.gl/... or full URL)
+  maps_embed_url text,   -- the "src" URL from Google Maps' Share → Embed a map iframe
   constraint site_settings_single_row check (id = 1)
 );
 
@@ -108,20 +110,22 @@ create policy "Public can read stats" on stats for select using (true);
 -- falls back to a neutral placeholder block until you upload real photos to
 -- Cloudinary and paste their public IDs in here.
 
-insert into site_settings (id, studio_name, short_name, tagline, description, whatsapp_number, whatsapp_message, email, location, instagram_url, youtube_url, facebook_url)
+insert into site_settings (id, studio_name, short_name, tagline, description, whatsapp_number, whatsapp_message, email, location, instagram_url, youtube_url, facebook_url, maps_link, maps_embed_url)
 values (
   1,
   'Toiwo Studio',
   'TOIWO',
   'Merekam emosi, menjadi karya abadi.',
   'Toiwo Studio adalah studio foto & videografi yang mengabadikan momen pernikahan, prewedding, dan perjalanan cinta menjadi karya visual yang jujur dan personal.',
-  '6281234567890',
+  '6289501655435',
   'Halo Toiwo Studio, saya ingin bertanya tentang paket foto & video.',
-  'hello@toiwostudio.com',
-  'Jakarta, Indonesia',
+  'toiwostudio@gmail.com',
+  'Malang, Indonesia',
   'https://instagram.com/toiwostudio',
   'https://youtube.com/@toiwostudio',
-  'https://facebook.com/toiwostudio'
+  'https://www.facebook.com/profile.php?id=61568850235362',
+  'https://maps.app.goo.gl/gvTnU5d37W3KqFej8',
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.514578820023!2d112.6360163!3d-7.9456555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd629628a3819d7%3A0x48401ca1f18f19c0!2sToiwo%20House%2C%20Coffee%20%26%20Asian%20Eatery!5e0!3m2!1sen!2sid!4v1788507321702!5m2!1sen!2sid'
 )
 on conflict (id) do nothing;
 
