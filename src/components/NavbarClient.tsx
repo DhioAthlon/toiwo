@@ -6,9 +6,11 @@ import { MenuIcon, CloseIcon } from "@/components/icons";
 
 export function NavbarClient({
   shortName,
+  logoUrl,
   navItems,
 }: {
   shortName: string;
+  logoUrl: string | null;
   navItems: { label: string; href: string }[];
 }) {
   const [scrolled, setScrolled] = useState(false);
@@ -48,9 +50,14 @@ export function NavbarClient({
 
           <Link
             href="/"
-            className="font-display text-xl md:text-2xl tracking-[0.2em] justify-self-start md:justify-self-center"
+            className="justify-self-start md:justify-self-center flex items-center"
           >
-            {shortName}
+            {logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element -- Cloudinary already serves an optimized image via URL params (f_auto,q_auto).
+              <img src={logoUrl} alt={shortName} className="h-7 md:h-8 w-auto" />
+            ) : (
+              <span className="font-display text-xl md:text-2xl tracking-[0.2em]">{shortName}</span>
+            )}
           </Link>
 
           <nav className="hidden md:flex items-center justify-end gap-8 text-sm tracking-wide">

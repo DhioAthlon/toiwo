@@ -21,8 +21,15 @@ create table if not exists site_settings (
   facebook_url text,
   maps_link text,        -- shareable Google Maps link (maps.app.goo.gl/... or full URL)
   maps_embed_url text,   -- the "src" URL from Google Maps' Share → Embed a map iframe
+  logo_id text,           -- Cloudinary public ID for the navbar logo (horizontal wordmark).
+                           -- Leave blank to show the studio short_name as text instead.
   constraint site_settings_single_row check (id = 1)
 );
+
+-- Adds logo_id to a site_settings table created before this column existed.
+-- `create table if not exists` above won't add columns to an existing table,
+-- so this covers projects that already ran an earlier version of this file.
+alter table site_settings add column if not exists logo_id text;
 
 -- === projects (photo galleries) =============================================
 create table if not exists projects (

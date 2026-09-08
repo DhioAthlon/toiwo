@@ -31,6 +31,7 @@ Kolom penting:
 - `projects.cover_image_id` & `gallery_image_ids` — Cloudinary public ID (lihat bagian Cloudinary di bawah).
 - `films.youtube_id` — cuma ID video-nya, bagian setelah `v=` di URL YouTube (`https://youtube.com/watch?v=dQw4w9WgXcQ` → `dQw4w9WgXcQ`).
 - `team_members.photo_id` — Cloudinary public ID.
+- `site_settings.logo_id` — Cloudinary public ID logo horizontal buat navbar. Kosongkan (`null`) untuk tampilkan `short_name` sebagai teks; kalau punya project Supabase lama (sebelum kolom ini ada), jalankan ulang `supabase/schema.sql` sekali lagi — sudah aman di-run berkali-kali (`alter table ... add column if not exists`).
 
 ## Menyambungkan Cloudinary (foto)
 
@@ -65,6 +66,7 @@ Upload video seperti biasa ke channel YouTube kamu, lalu salin **ID video**-nya 
 - `src/lib/content.ts` — semua fungsi pengambilan data (`getProjects`, `getFilms`, `getTeam`, dst). Setiap fungsi otomatis fallback ke data contoh kalau Supabase belum tersambung atau query gagal — situs tidak akan pernah crash karena ini.
 - `src/components/Media.tsx` — render foto Cloudinary kalau ada Public ID, atau blok placeholder kalau belum.
 - `src/components/YouTubeEmbed.tsx` — thumbnail YouTube yang baru load iframe saat diklik.
+- `src/app/icon.jpg` & `src/app/apple-icon.jpg` — ikon tab browser / home screen. Ini file statis, di-hardcode di repo (bukan lewat Supabase/Cloudinary) karena jarang berubah dan browser cache-nya agresif — ganti file ini langsung kalau mau ganti logo tab.
 
 ## Deploy
 

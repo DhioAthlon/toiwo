@@ -1,8 +1,10 @@
 import { getSiteSettings } from "@/lib/content";
 import { nav } from "@/lib/site-config";
+import { cloudinaryUrl } from "@/lib/cloudinary";
 import { NavbarClient } from "@/components/NavbarClient";
 
 export async function Navbar() {
   const settings = await getSiteSettings();
-  return <NavbarClient shortName={settings.shortName} navItems={nav} />;
+  const logoUrl = settings.logoId ? cloudinaryUrl(settings.logoId, { width: 240 }) : null;
+  return <NavbarClient shortName={settings.shortName} logoUrl={logoUrl} navItems={nav} />;
 }

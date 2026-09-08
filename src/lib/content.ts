@@ -145,6 +145,7 @@ type SiteSettingsRow = {
   facebook_url: string | null;
   maps_link: string | null;
   maps_embed_url: string | null;
+  logo_id: string | null;
 };
 
 function mapProject(row: ProjectRow): Project {
@@ -203,6 +204,7 @@ function mapSettings(row: SiteSettingsRow | null): SiteSettings {
     facebookUrl: row.facebook_url ?? defaultSiteSettings.facebookUrl,
     mapsLink: row.maps_link ?? defaultSiteSettings.mapsLink,
     mapsEmbedUrl: row.maps_embed_url ?? defaultSiteSettings.mapsEmbedUrl,
+    logoId: row.logo_id ?? defaultSiteSettings.logoId,
   };
 }
 
