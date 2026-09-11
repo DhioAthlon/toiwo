@@ -146,6 +146,7 @@ type SiteSettingsRow = {
   maps_link: string | null;
   maps_embed_url: string | null;
   logo_id: string | null;
+  logo_light_id: string | null;
 };
 
 function mapProject(row: ProjectRow): Project {
@@ -205,6 +206,7 @@ function mapSettings(row: SiteSettingsRow | null): SiteSettings {
     mapsLink: row.maps_link ?? defaultSiteSettings.mapsLink,
     mapsEmbedUrl: row.maps_embed_url ?? defaultSiteSettings.mapsEmbedUrl,
     logoId: row.logo_id ?? defaultSiteSettings.logoId,
+    logoLightId: row.logo_light_id ?? defaultSiteSettings.logoLightId,
   };
 }
 
