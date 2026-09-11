@@ -31,7 +31,8 @@ Kolom penting:
 - `projects.cover_image_id` & `gallery_image_ids` — Cloudinary public ID (lihat bagian Cloudinary di bawah).
 - `films.youtube_id` — cuma ID video-nya, bagian setelah `v=` di URL YouTube (`https://youtube.com/watch?v=dQw4w9WgXcQ` → `dQw4w9WgXcQ`).
 - `team_members.photo_id` — Cloudinary public ID.
-- `site_settings.logo_id` — Cloudinary public ID logo horizontal buat navbar. Kosongkan (`null`) untuk tampilkan `short_name` sebagai teks; kalau punya project Supabase lama (sebelum kolom ini ada), jalankan ulang `supabase/schema.sql` sekali lagi — sudah aman di-run berkali-kali (`alter table ... add column if not exists`).
+- `site_settings.logo_id` — Cloudinary public ID logo horizontal buat navbar (versi gelap/normal, dipakai setelah discroll). Kosongkan (`null`) untuk tampilkan `short_name` sebagai teks; kalau punya project Supabase lama (sebelum kolom ini ada), jalankan ulang `supabase/schema.sql` sekali lagi — sudah aman di-run berkali-kali (`alter table ... add column if not exists`).
+- `site_settings.logo_light_id` — Cloudinary public ID logo versi terang/putih, dipakai saat navbar masih transparan di atas foto hero (sebelum discroll). Upload versi putih dari logo kamu ke Cloudinary lalu tempel Public ID-nya di sini. Kosongkan kalau belum punya versi putih — situs otomatis "memutihkan" `logo_id` pakai filter CSS sebagai gantinya.
 
 ## Menyambungkan Cloudinary (foto)
 

@@ -24,6 +24,10 @@ export type SiteSettings = {
   mapsLink: string | null;
   mapsEmbedUrl: string | null;
   logoId: string | null;
+  // Light/white version of the logo, shown when the navbar floats transparently
+  // over the hero photo (top of the homepage, before scrolling). Falls back to
+  // logoId (with a CSS filter to whiten it) when left blank.
+  logoLightId: string | null;
 };
 
 // Used when Supabase isn't configured yet, and as a safety net for any field
@@ -46,6 +50,7 @@ export const defaultSiteSettings: SiteSettings = {
     "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.514578820023!2d112.6360163!3d-7.9456555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd629628a3819d7%3A0x48401ca1f18f19c0!2sToiwo%20House%2C%20Coffee%20%26%20Asian%20Eatery!5e0!3m2!1sen!2sid!4v1788507321702!5m2!1sen!2sid",
   // No logo uploaded yet → navbar/footer fall back to rendering shortName as text.
   logoId: null,
+  logoLightId: null,
 };
 
 export function whatsappHref(number: string, message: string) {
